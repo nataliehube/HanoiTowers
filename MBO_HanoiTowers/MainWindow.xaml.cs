@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Windows.Media.Animation;
 using System.Threading;
 using System.ComponentModel;
+using System.Speech.Recognition;
 
 namespace MBO_HanoiTowers
 {
@@ -41,14 +42,94 @@ namespace MBO_HanoiTowers
         int? senderGrid = null;
         int? targetGrid = null;
 
+        private SpeechRecognitionEngine speechRecognizer = new SpeechRecognitionEngine();
+
 
         //main method
         public MainWindow()
         {
             InitializeComponent();
             init();
+
+            speechRecognizer.SpeechRecognized += speechRecognizer_SpeechRecognized;
+
+            GrammarBuilder gb = new GrammarBuilder();
+
+            Choices numbers = new Choices();
+            numbers.Add(new string[] {"eins", "zwei", "drei","hallo", "test"});
+            gb.Append(numbers);
+
+            // Create the Grammar instance and load it into the speech recognition engine.
+            Grammar g = new Grammar(gb);
+            speechRecognizer.LoadGrammar(g);
+            speechRecognizer.SetInputToDefaultAudioDevice();
+
+            speechRecognizer.RecognizeAsync(RecognizeMode.Multiple);
+
         }
 
+        void speechRecognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
+        {
+            printSpeechRecognized(e.Result.Text);
+            userSpeechCommand(e.Result.Text, "two");
+
+        }
+
+        private void userSpeechCommand(string from, string to)
+        { 
+            int? clicked = null;
+            switch (from)
+            {
+                case "eins":
+                    Console.WriteLine("Click 1");
+                    clicked = 0;
+                    break;
+                case "zwei":
+                    Console.WriteLine("Click 2");
+                    clicked = 1;
+                    break;
+                case "drei":
+                    Console.WriteLine("Click 3");
+                    clicked = 2;
+                    break;
+                default:
+                    Console.WriteLine("Default case");
+                    break;
+            }
+            if (!senderGrid.HasValue)
+            {
+                senderGrid = clicked;
+            }
+            // define target/to
+            else
+            {
+                targetGrid = 1;
+                // check if turn is allowed (sender.width < target.width)!
+                if ((getLastElementWidth(senderGrid.Value) < getLastElementWidth(targetGrid.Value) || getLastElementWidth(targetGrid.Value) == 0) && getLastElementWidth(senderGrid.Value) != 0)
+                {
+                    // start animation
+                    moveTo(senderGrid.Value, targetGrid.Value);
+                    System.Media.SystemSounds.Hand.Play();
+                    message.Content = "";
+                }
+                else
+                {
+                    // wrong turn
+                    System.Media.SystemSounds.Beep.Play();
+                    message.Content = "Wrong turn.";
+                }
+                // reset parameters
+                senderGrid = null;
+                targetGrid = null;
+            }
+        
+        }
+
+        private void printSpeechRecognized(string speech)
+        {
+            Console.WriteLine(speech);
+            message.Content = "Nummer erkannt " + speech;
+        }
         // click command on grid rectangle
         // position 1,2 or 3
         private void userCommand(object sender, MouseButtonEventArgs e)

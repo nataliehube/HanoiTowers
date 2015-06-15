@@ -13,6 +13,6 @@ namespace MBO_HanoiTowers
     /// </summary>
     public partial class App : Application
     {
-        
+
     }
 }
