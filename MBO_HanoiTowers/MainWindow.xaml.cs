@@ -39,8 +39,8 @@ namespace MBO_HanoiTowers
         // Canvas List
         List<Canvas>[] canvasList = new List<Canvas>[3];
         // click sender and click target
-        int? senderGrid = null;
-        int? targetGrid = null;
+        int? senderPole = null;
+        int? targetPole = null;
 
         private SpeechRecognitionEngine speechRecognizer = new SpeechRecognitionEngine();
 
@@ -51,15 +51,13 @@ namespace MBO_HanoiTowers
             InitializeComponent();
             init();
 
-            GrammarBuilder gb = new GrammarBuilder();
-
-            Choices numbers = new Choices();
-            numbers.Add(new string[] {"eins", "zwei", "drei","hallo", "test"});
-            gb.Append(numbers);
+            int? numberOfPlates = null;
 
             // Create the Grammar instance and load it into the speech recognition engine.
-            Grammar g = new Grammar(gb);
+            speechRecognizer.UnloadAllGrammars();
+            Grammar g = new Grammar(@"C:\Users\Natalie\Dropbox\TU Dresden\VMI-10 Multimodale Benutzungsoberflächen\Uebungen\HanoiTowers\MBO_HanoiTowers\gb.xml", "hanoiTowers");
             speechRecognizer.LoadGrammar(g);
+
             speechRecognizer.SetInputToDefaultAudioDevice();
 
             speechRecognizer.RecognizeAsync(RecognizeMode.Multiple);
@@ -73,18 +71,75 @@ namespace MBO_HanoiTowers
                 {
 
                     //TODO: further commands by speech to be implemented (number of discs and solving and refreshing)
-        
-                    case "eins":
+
+                    case "von":
+                        senderPole = null;
+                        break;
+                    case "zu":
+                    case "Turm Eins":
                         Console.WriteLine("Click 1");
                         handleInput(0);
                         break;
-                    case "zwei":
+                    case "Turm Zwei":
                         Console.WriteLine("Click 2");
                         handleInput(1);
                         break;
-                    case "drei":
+                    case "Turm Drei":
                         Console.WriteLine("Click 3");
                         handleInput(2);
+                        break;
+                    case "Lösen":
+                        solve_Click(null, null);
+                        break;
+                    case "Zurücksetzen":
+                        reset_Click(null, null);
+                        break;
+                    case "Eins":
+                        numberOfPlates = 1;
+                        break;
+                    case "Zwei":
+                        numberOfPlates = 2;
+                        break;
+                    case "Drei":
+                        numberOfPlates = 3;
+                        break;
+                    case "Vier":
+                        numberOfPlates = 4;
+                        break;
+                    case "Fünf":
+                        numberOfPlates = 5;
+                        break;
+                    case "Sechs":
+                        numberOfPlates = 6;
+                        break;
+                    case "Sieben":
+                        numberOfPlates = 7;
+                        break;
+                    case "Acht":
+                        numberOfPlates = 8;
+                        break;
+                    case "Neun":
+                        numberOfPlates = 9;
+                        break;
+                    case "Zehn":
+                        numberOfPlates = 10;
+                        break;
+                    case "Anzahl":
+                        numberOfPlates = null;
+                        break;
+                    case "Scheiben":
+                        if (numberOfPlates != null)
+                        {
+                            Plate.Text = numberOfPlates.ToString();
+                            changePlateCount(null, null);
+                        }
+                        break;
+                    case "Scheibe":
+                        if (numberOfPlates != null)
+                        {
+                            Plate.Text = numberOfPlates.ToString();
+                            changePlateCount(null, null);
+                        }
                         break;
                     default:
                         Console.WriteLine("Default case");
@@ -133,19 +188,19 @@ namespace MBO_HanoiTowers
         private void handleInput(int? pole)
         {
             // define sender/from
-            if (!senderGrid.HasValue)
+            if (!senderPole.HasValue)
             {
-                senderGrid = pole;
+                senderPole = pole;
             }
             // define target/to
             else
             {
-                targetGrid = pole;
+                targetPole = pole;
                 // check if turn is allowed (sender.width < target.width)!
-                if ((getLastElementWidth(senderGrid.Value) < getLastElementWidth(targetGrid.Value) || getLastElementWidth(targetGrid.Value) == 0) && getLastElementWidth(senderGrid.Value) != 0)
+                if ((getLastElementWidth(senderPole.Value) < getLastElementWidth(targetPole.Value) || getLastElementWidth(targetPole.Value) == 0) && getLastElementWidth(senderPole.Value) != 0)
                 {
                     // start animation
-                    moveTo(senderGrid.Value, targetGrid.Value);
+                    moveTo(senderPole.Value, targetPole.Value);
                     System.Media.SystemSounds.Hand.Play();
                     message.Content = "";
                 }
@@ -156,8 +211,8 @@ namespace MBO_HanoiTowers
                     message.Content = "Wrong turn.";
                 }
                 // reset parameters
-                senderGrid = null;
-                targetGrid = null;
+                senderPole = null;
+                targetPole = null;
             }
 
 
@@ -188,8 +243,8 @@ namespace MBO_HanoiTowers
         private void reset_Click(object sender, RoutedEventArgs e)
         {
             System.Media.SystemSounds.Beep.Play();
-            senderGrid = null;
-            targetGrid = null;
+            senderPole = null;
+            targetPole = null;
             init();
         }
 
@@ -200,7 +255,7 @@ namespace MBO_HanoiTowers
             // disable buttons
             solve.IsEnabled = false;
             reset.IsEnabled = false;
-            message.Content = "Solving. Please wait...";
+            message.Content = "Rätsel wird gelöst. Bitte warten...";
             System.Media.SystemSounds.Hand.Play();
             // start thread queue
             ThreadPool.QueueUserWorkItem(new WaitCallback(startSolver));
@@ -217,7 +272,7 @@ namespace MBO_HanoiTowers
             // clear canvas
             Canvas1.Children.Clear();
             message.Content = "";
-            Disc.Text = maxCount.ToString();
+            Plate.Text = maxCount.ToString();
             canvasList[0] = new List<Canvas>();
             canvasList[1] = new List<Canvas>();
             canvasList[2] = new List<Canvas>();
@@ -254,7 +309,7 @@ namespace MBO_HanoiTowers
         {
             if (to <= 2 && to >= 0)
             {
-                System.Console.WriteLine("Move panel from pole " + from + " to pole " + to);
+                System.Console.WriteLine("Bewege Scheibe von Turm " + from + " zu Turm " + to + ".");
                 if (canvasList[from][0] != null)
                 {
                     // handle selected canvas
@@ -280,7 +335,7 @@ namespace MBO_HanoiTowers
                     {
                         solve.IsEnabled = true;
                         reset.IsEnabled = true;
-                        message.Content = "Finish.";
+                        message.Content = "Fertig.";
                     }
                 }
             }
@@ -295,7 +350,7 @@ namespace MBO_HanoiTowers
         {
             if (n == 1)
             {
-                System.Console.WriteLine("Move panel from pole " + from + " to pole " + to);
+                System.Console.WriteLine("Bewege Scheibe von Turm " + from + " zu Turm " + to + ".");
                 // call gui thread for animation handling
                 this.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
                 new moveAnimation(this.moveTo),from, to);
@@ -355,19 +410,19 @@ namespace MBO_HanoiTowers
         // change plate count and reset game
         private void changePlateCount(object sender, KeyEventArgs e)
         {
-            if (Disc.Text != null && Disc.Text != "")
+            if (Plate.Text != null && Plate.Text != "")
             {
-                int num = Convert.ToInt32(Disc.Text);
+                int num = Convert.ToInt32(Plate.Text);
                 if (num > 1 && num < 11)
                 {
-                    System.Console.WriteLine("New plate count: " + Disc.Text);
+                    System.Console.WriteLine("Anzahl der Scheiben: " + Plate.Text);
                     maxCount = num;
                     init();
                 }
                 else
                 {
-                    message.Content = "Only numbers between 1 and 11 alowed.";
-                    Disc.Text = maxCount.ToString();
+                    message.Content = "Bitte eine Zahl zwischen 1 und 10 auswählen.";
+                    Plate.Text = maxCount.ToString();
                     System.Media.SystemSounds.Beep.Play();
                 }
             }
