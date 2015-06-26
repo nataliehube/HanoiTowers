@@ -51,8 +51,6 @@ namespace MBO_HanoiTowers
             InitializeComponent();
             init();
 
-            speechRecognizer.SpeechRecognized += speechRecognizer_SpeechRecognized;
-
             GrammarBuilder gb = new GrammarBuilder();
 
             Choices numbers = new Choices();
@@ -66,63 +64,35 @@ namespace MBO_HanoiTowers
 
             speechRecognizer.RecognizeAsync(RecognizeMode.Multiple);
 
-        }
-
-        void speechRecognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
-        {
-            printSpeechRecognized(e.Result.Text);
-            userSpeechCommand(e.Result.Text, "two");
-
-        }
-
-        private void userSpeechCommand(string from, string to)
-        { 
-            int? clicked = null;
-            switch (from)
+            speechRecognizer.SpeechRecognized += (s, e1) =>
             {
-                case "eins":
-                    Console.WriteLine("Click 1");
-                    clicked = 0;
-                    break;
-                case "zwei":
-                    Console.WriteLine("Click 2");
-                    clicked = 1;
-                    break;
-                case "drei":
-                    Console.WriteLine("Click 3");
-                    clicked = 2;
-                    break;
-                default:
-                    Console.WriteLine("Default case");
-                    break;
-            }
-            if (!senderGrid.HasValue)
-            {
-                senderGrid = clicked;
-            }
-            // define target/to
-            else
-            {
-                targetGrid = 1;
-                // check if turn is allowed (sender.width < target.width)!
-                if ((getLastElementWidth(senderGrid.Value) < getLastElementWidth(targetGrid.Value) || getLastElementWidth(targetGrid.Value) == 0) && getLastElementWidth(senderGrid.Value) != 0)
+
+                string from = e1.Result.Text;
+                printSpeechRecognized(from);
+                switch (from)
                 {
-                    // start animation
-                    moveTo(senderGrid.Value, targetGrid.Value);
-                    System.Media.SystemSounds.Hand.Play();
-                    message.Content = "";
-                }
-                else
-                {
-                    // wrong turn
-                    System.Media.SystemSounds.Beep.Play();
-                    message.Content = "Wrong turn.";
-                }
-                // reset parameters
-                senderGrid = null;
-                targetGrid = null;
-            }
+
+                    //TODO: further commands by speech to be implemented (number of discs and solving and refreshing)
         
+                    case "eins":
+                        Console.WriteLine("Click 1");
+                        handleInput(0);
+                        break;
+                    case "zwei":
+                        Console.WriteLine("Click 2");
+                        handleInput(1);
+                        break;
+                    case "drei":
+                        Console.WriteLine("Click 3");
+                        handleInput(2);
+                        break;
+                    default:
+                        Console.WriteLine("Default case");
+                        break;
+                }
+            };
+
+
         }
 
         private void printSpeechRecognized(string speech)
@@ -130,6 +100,7 @@ namespace MBO_HanoiTowers
             Console.WriteLine(speech);
             message.Content = "Nummer erkannt " + speech;
         }
+
         // click command on grid rectangle
         // position 1,2 or 3
         private void userCommand(object sender, MouseButtonEventArgs e)
@@ -154,15 +125,22 @@ namespace MBO_HanoiTowers
                     Console.WriteLine("Default case");
                     break;
             }
+
+            handleInput(clicked);
+        }
+
+        //function to handle Input
+        private void handleInput(int? pole)
+        {
             // define sender/from
             if (!senderGrid.HasValue)
             {
-                senderGrid = clicked;
+                senderGrid = pole;
             }
             // define target/to
             else
             {
-                targetGrid = clicked;
+                targetGrid = pole;
                 // check if turn is allowed (sender.width < target.width)!
                 if ((getLastElementWidth(senderGrid.Value) < getLastElementWidth(targetGrid.Value) || getLastElementWidth(targetGrid.Value) == 0) && getLastElementWidth(senderGrid.Value) != 0)
                 {
@@ -181,7 +159,10 @@ namespace MBO_HanoiTowers
                 senderGrid = null;
                 targetGrid = null;
             }
+
+
         }
+
 
         // get last element in canvas list to return the width of the specific rectangle
         // -> to check if turn is allowed
