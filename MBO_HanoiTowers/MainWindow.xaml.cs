@@ -20,6 +20,7 @@ using System.Globalization;
 using System.Xml.Serialization;
 using System.IO;
 using System.Diagnostics;
+using System.Xml;
 
 namespace MBO_HanoiTowers
 {
@@ -68,7 +69,7 @@ namespace MBO_HanoiTowers
 
             // Create the Grammar instance and load it into the speech recognition engine.
             speechRecognizer.UnloadAllGrammars();
-            Grammar g = new Grammar(@"C:\Users\Natalie\Dropbox\TU Dresden\VMI-10 Multimodale Benutzungsoberflächen\Uebungen\HanoiTowers\MBO_HanoiTowers\gb.xml", "hanoiTowers");
+            Grammar g = new Grammar(@"C:\Users\andyy_000\Documents\Visual Studio 2013\Projects\HanoiTowers\MBO_HanoiTowers\gb.xml", "hanoiTowers");
             speechRecognizer.LoadGrammar(g);
 
             speechRecognizer.SetInputToDefaultAudioDevice();
@@ -482,20 +483,30 @@ namespace MBO_HanoiTowers
                 XmlSerializer ser = new XmlSerializer(typeof(MouseGesture));
                 TextWriter writer = new StreamWriter("Template.xml");
                 ser.Serialize(writer, this.current_gesture);
-
-                var path = "templates/temp_gesture.xml";
-                System.IO.FileStream file = System.IO.File.Create(path);
-
-                ser.Serialize(file, this.current_gesture);
-
                 writer.Close();
-                file.Close();
+
+
             }
             else
             {
+                /*
+                 * Record Gesture 
+                XmlSerializer serializer = new XmlSerializer(typeof(MouseGesture));
+                XmlWriterSettings settings = new XmlWriterSettings();
+                settings.Indent = true;
+
+                XmlWriter writerXML = XmlWriter.Create("templates/example.xml", settings);
+                serializer.Serialize(writerXML, this.current_gesture, null);
+
+                writerXML.Close();
+                */
+                
                 double one = this.dynamicTimeWarping(this.current_gesture, this.one_gesture);
                 double two = this.dynamicTimeWarping(this.current_gesture, this.two_gesture);
                 double three = this.dynamicTimeWarping(this.current_gesture, this.three_gesture);
+                Debug.WriteLine("One: {0}", one);
+                Debug.WriteLine("Two: {0}", two);
+                Debug.WriteLine("Three: {0}", three);
                 if (one < Math.Min(two, three))
                 {
                     drawed = 0;
