@@ -1,0 +1,36 @@
+﻿<grammar xmlns="http://www.w3.org/2001/06/grammar"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/06/grammar
+                             http://www.w3.org/TR/speech-grammar/grammar.xsd"
+         xml:lang="de-DE"
+         version="1.0">
+  <rule id="hanoiTowers"
+        scope="public">
+    <one-of>
+      <item>von</item>
+      <item>Turm Eins</item>
+      <item>Turm Zwei</item>
+      <item>Turm Drei</item>
+      <item>zu</item>
+
+      <item>Anzahl</item>
+      <item>Scheiben</item>
+      <item>Scheibe</item>
+	  
+	    <item>Lösen</item>
+      <item>Zurücksetzen</item>
+
+      <item>Eine</item>
+      <item>Zwei</item>
+      <item>Drei</item>
+      <item>Vier</item>
+	    <item>Fünf</item>
+      <item>Sechs</item>
+      <item>Sieben</item>
+	    <item>Acht</item>
+      <item>Neun</item>
+      <item>Zehn</item>
+	  
+    </one-of>
+  </rule>
+</grammar>

@@ -11,3 +11,11 @@ http://moodle.inf.tu-dresden.de/pluginfile.php/18176/mod_resource/content/5/MBO%
 
 http://rosettacode.org/wiki/Towers_of_Hanoi
 http://de.wikipedia.org/wiki/T%C3%BCrme_von_Hanoi
+
+
+## SpeechRecognition
+### Befehle:
+#### Von Turm <Zahl> zu Turm <Zahl>.
+#### Anzahl: <Zahl> Scheiben.
+#### Lösen.
+#### Zurücksetzen.
