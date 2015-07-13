@@ -44,9 +44,6 @@ namespace MBO_HanoiTowers
         int? said_first = null;
         int? said_second = null;
         int? said = null;
-        bool saidMove = false;
-        bool nextMove = false;
-        int senderValue;
 
         private SpeechRecognitionEngine speechRecognizer = new SpeechRecognitionEngine();
 
@@ -70,9 +67,7 @@ namespace MBO_HanoiTowers
 
             speechRecognizer.SpeechRecognized += (s, e1) =>
             {
-                said_first = null;
-                said_second = null;
-                said = null;
+
                 string from = e1.Result.Text;
                 printSpeechRecognized(from);
                 switch (from)
@@ -146,28 +141,18 @@ namespace MBO_HanoiTowers
                         }
                         break;
                     case "Bewege":
-                        senderPole = null;
-                        targetPole = null;
-                        saidMove = true;
-                        break;
                     case "Das":
-                        if (this.one.IsMouseOver && saidMove == true) {
+                        if (this.one.IsMouseOver) {
                             said_first = 0;
                             Console.WriteLine("Bla 1");
-                            saidMove = false;
-                            nextMove = true;
                         }
-                        else if (this.two.IsMouseOver && saidMove == true) {
+                        else if (this.two.IsMouseOver) {
                             said_first = 1;
                             Console.WriteLine("Bla 2");
-                            saidMove = false;
-                            nextMove = true;
                         }
-                        else if (this.three.IsMouseOver && saidMove == true) {
+                        else if (this.three.IsMouseOver) {
                             said_first = 2;
                             Console.WriteLine("Bla 3");
-                            saidMove = false;
-                            nextMove = true;
                         }
                         break;
                     case "Nach Da":
@@ -188,36 +173,27 @@ namespace MBO_HanoiTowers
                         Console.WriteLine("Default case");
                         break;
                 }
-                //if (said_first == null || said_second == null)
-                //{
+                if (said_first != null)
+                {
                     setPoles(said);
-                    Console.WriteLine("oder hier?");
-                    Console.WriteLine("boolaean: " + saidMove);
+                }
+                else
+                {
                     saidOrder();
-                //}
-                //else if (said_first.HasValue || said_second.HasValue)
-                //{
-                //    Console.WriteLine("Komme ich hie rein?");
-                //    saidOrder();
-                //}
+                }
             };
-        }
 
+
+        }
         private void saidOrder()
         {
-            if (!senderPole.HasValue)
-            {
-                setPoles(said_first);
-                Console.WriteLine("setze first");
-            }
-            else if (senderPole.HasValue)
+            if (senderPole.HasValue)
             {
                 setPoles(said_second);
-                Console.WriteLine("setze second");
-            } 
-            else if (senderPole == null && targetPole ==null)
+            }
+            else
             {
-                Console.WriteLine("Do Nothing");
+                setPoles(said_first);
             }
         }
 
@@ -271,7 +247,6 @@ namespace MBO_HanoiTowers
                 // wrong turn
                 System.Media.SystemSounds.Beep.Play();
                 message.Content = "Wrong turn.";
-                //Console.WriteLine("canvasList" + canvasList);
             }
             // reset parameters
             senderPole = null;
@@ -282,45 +257,10 @@ namespace MBO_HanoiTowers
         //set values of poles
         private void setPoles(int? pole)
         {
-            int? value = null;
-            //try
-            //{
-            //    value = getLastElementWidth(senderPole.Value);
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    message.Content = "Fehler! :" + ex;
-            //    senderPole = null;
-            //}
-
             if (!senderPole.HasValue)
             {
                 senderPole = pole;
-                switch (senderPole)
-                {
-                    case 0:
-                        senderValue = 0;
-                        break;
-                    case 1:
-                        senderValue = 1;
-                        break;
-                    case 2:
-                        senderValue = 2;
-                        break;
-                    default:
-                        break;
-                }
-                Console.WriteLine("canvasList: " + canvasList[senderValue].Count());
-                //if (getLastElementWidth(senderPole.Value) < 0)
-                if (canvasList[senderValue].Count() <= 0)
-                {
-                    message.Content = "Hier ist doch gar nichts!";
-                    senderPole = null;
-                    Console.WriteLine("Value: " + senderValue);
-                    senderValue = 3;
-                }
-                Console.WriteLine("Neuer Wert: " + senderPole);
+                message.Content = "Neuer Wert: " + senderPole;
             }
             else
             {
@@ -340,7 +280,6 @@ namespace MBO_HanoiTowers
             if (!senderPole.HasValue)
             {
                 senderPole = pole;
-                
             }
             // define target/to
             else

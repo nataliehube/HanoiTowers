@@ -46,7 +46,7 @@ namespace MBO_HanoiTowers
         int? said = null;
         bool saidMove = false;
         bool nextMove = false;
-        int senderValue;
+        //int senderValue = 0;
 
         private SpeechRecognitionEngine speechRecognizer = new SpeechRecognitionEngine();
 
@@ -171,53 +171,53 @@ namespace MBO_HanoiTowers
                         }
                         break;
                     case "Nach Da":
-                        if (this.one.IsMouseOver) {
+                        if (this.one.IsMouseOver && nextMove == true) {
                             said_second = 0;
                             Console.WriteLine("Möp 1");
+                            nextMove = false;
                         }
                         else if (this.two.IsMouseOver) {
                             said_second = 1;
                             Console.WriteLine("Möp 2");
+                            saidMove = false;
                         }
                         else if (this.three.IsMouseOver) {
                             said_second = 2;
                             Console.WriteLine("Möp 3");
+                            saidMove = false;
                         }
                         break;
                     default:
                         Console.WriteLine("Default case");
                         break;
                 }
-                //if (said_first == null || said_second == null)
-                //{
+                if (said_first == null && saidMove == false)
+                {
                     setPoles(said);
                     Console.WriteLine("oder hier?");
-                    Console.WriteLine("boolaean: " + saidMove);
+                }
+                else
+                {
+                    Console.WriteLine("Komme ich hie rein?");
                     saidOrder();
-                //}
-                //else if (said_first.HasValue || said_second.HasValue)
-                //{
-                //    Console.WriteLine("Komme ich hie rein?");
-                //    saidOrder();
-                //}
+                }
             };
-        }
 
+
+        }
         private void saidOrder()
         {
-            if (!senderPole.HasValue)
+            if (senderPole == null)
             {
                 setPoles(said_first);
                 Console.WriteLine("setze first");
             }
-            else if (senderPole.HasValue)
+            else if (senderPole != null)
             {
+                //setPoles(said_first);
+                //Console.WriteLine("setze first");
                 setPoles(said_second);
                 Console.WriteLine("setze second");
-            } 
-            else if (senderPole == null && targetPole ==null)
-            {
-                Console.WriteLine("Do Nothing");
             }
         }
 
@@ -296,29 +296,19 @@ namespace MBO_HanoiTowers
 
             if (!senderPole.HasValue)
             {
+                int senderValue;
                 senderPole = pole;
-                switch (senderPole)
-                {
+                switch(said_first){
                     case 0:
-                        senderValue = 0;
-                        break;
-                    case 1:
                         senderValue = 1;
                         break;
-                    case 2:
-                        senderValue = 2;
-                        break;
-                    default:
-                        break;
+
                 }
-                Console.WriteLine("canvasList: " + canvasList[senderValue].Count());
                 //if (getLastElementWidth(senderPole.Value) < 0)
-                if (canvasList[senderValue].Count() <= 0)
+                if (canvasList[].Count() == 0)
                 {
                     message.Content = "Hier ist doch gar nichts!";
                     senderPole = null;
-                    Console.WriteLine("Value: " + senderValue);
-                    senderValue = 3;
                 }
                 Console.WriteLine("Neuer Wert: " + senderPole);
             }
