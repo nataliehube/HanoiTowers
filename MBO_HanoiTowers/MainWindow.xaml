@@ -1,7 +1,14 @@
 ﻿<Window x:Class="MBO_HanoiTowers.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="MBO - Türme von Hanoi" Height="700" Width="800" KeyDown="Window_KeyDown" PreviewKeyDown="Window_KeyDown">
+    Title="MBO - Türme von Hanoi" 
+    Height="700" 
+    Width="800" 
+    KeyDown="Window_KeyDown" 
+    PreviewKeyDown="Window_KeyDown"
+    MouseRightButtonDown="Start_Gesture"
+    MouseRightButtonUp="Finish_Gesture"
+    MouseMove="Track_Position">
 
     <Window.Resources>
         <LinearGradientBrush EndPoint="1,0" x:Key="woodPole">

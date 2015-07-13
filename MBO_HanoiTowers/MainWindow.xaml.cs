@@ -11,10 +11,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+//using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Threading;
 using System.ComponentModel;
 using System.Speech.Recognition;
+using System.Globalization;
+using System.Xml.Serialization;
+using System.IO;
+using System.Diagnostics;
 
 namespace MBO_HanoiTowers
 {
@@ -42,9 +47,17 @@ namespace MBO_HanoiTowers
         int? senderGrid = null;
         int? targetGrid = null;
 
-        private SpeechRecognitionEngine speechRecognizer = new SpeechRecognitionEngine();
+        private SpeechRecognitionEngine speechRecognizer = new SpeechRecognitionEngine(new CultureInfo("de-DE"));
 
+        // Variables for Mouse Gesture Processing
+        Boolean button_pressed;
+        Boolean Templating = false;
+        MouseGesture current_gesture;
+        MouseGesture one_gesture;
+        MouseGesture two_gesture;
+        MouseGesture three_gesture;
 
+       
         //main method
         public MainWindow()
         {
@@ -91,6 +104,18 @@ namespace MBO_HanoiTowers
                         break;
                 }
             };
+
+            if (!Templating)
+            {
+                XmlSerializer mySerializer = new XmlSerializer(typeof(MouseGesture));
+                FileStream filestream_1 = new FileStream("templates/Template_1.xml", FileMode.Open);
+                this.one_gesture = (MouseGesture)mySerializer.Deserialize(filestream_1);
+                FileStream filestream_2 = new FileStream("templates/Template_2.xml", FileMode.Open);
+                this.two_gesture = (MouseGesture)mySerializer.Deserialize(filestream_2);
+                FileStream filestream_3 = new FileStream("templates/Template_3.xml", FileMode.Open);
+                this.three_gesture = (MouseGesture)mySerializer.Deserialize(filestream_3);
+            }
+
 
 
         }
@@ -162,7 +187,6 @@ namespace MBO_HanoiTowers
 
 
         }
-
 
         // get last element in canvas list to return the width of the specific rectangle
         // -> to check if turn is allowed
@@ -371,6 +395,130 @@ namespace MBO_HanoiTowers
                     System.Media.SystemSounds.Beep.Play();
                 }
             }
+        }
+
+
+        // GESTURE DETECTION
+        private void Start_Gesture(object sender, MouseEventArgs e)
+        {
+            this.button_pressed = true;
+            double X = e.GetPosition(this).X;
+            double Y = e.GetPosition(this).Y;
+            this.current_gesture = new MouseGesture();
+            this.current_gesture.init(X, Y);
+        }
+
+        private void Track_Position(object sender, MouseEventArgs e)
+        {
+            if (button_pressed)
+            {
+                double X = e.GetPosition(this).X;
+                double Y = e.GetPosition(this).Y;
+                this.current_gesture.AddValue(X, Y);
+            }
+        }
+
+        private void Finish_Gesture(object sender, MouseEventArgs e)
+        {
+            int? drawed = null;
+            button_pressed = false;
+            if (Templating)
+            {
+                XmlSerializer ser = new XmlSerializer(typeof(MouseGesture));
+                TextWriter writer = new StreamWriter("Template.xml");
+                ser.Serialize(writer, this.current_gesture);
+
+                var path = "templates/temp_gesture.xml";
+                System.IO.FileStream file = System.IO.File.Create(path);
+
+                ser.Serialize(file, this.current_gesture);
+
+                writer.Close();
+                file.Close();
+            }
+            else
+            {
+                double one = this.dynamicTimeWarping(this.current_gesture, this.one_gesture);
+                double two = this.dynamicTimeWarping(this.current_gesture, this.two_gesture);
+                double three = this.dynamicTimeWarping(this.current_gesture, this.three_gesture);
+                if (one < Math.Min(two, three))
+                {
+                    drawed = 0;
+                    Debug.WriteLine("One: {0}", one);
+                }
+                if (two < Math.Min(one, three))
+                {
+                    drawed = 1;
+                    Debug.WriteLine("Two: {0}", two);
+                }
+                if (three < Math.Min(two, one))
+                {
+                    drawed = 2;
+                    Debug.WriteLine("Three: {0}", three);
+                }
+
+                handleInput(drawed);
+
+            }
+        }
+
+        private double dynamicTimeWarping(MouseGesture gesture, MouseGesture template)
+        {
+            double[,] dwt_matrix = new double[gesture.movement.Count, template.movement.Count];
+
+            for (int i = 1; i < gesture.movement.Count; i++)
+            {
+                dwt_matrix[i, 0] = Double.MaxValue;
+            }
+            for (int j = 1; j < template.movement.Count; j++)
+            {
+                dwt_matrix[0, j] = Double.MaxValue;
+            }
+            dwt_matrix[0, 0] = 0;
+
+            for (int i = 1; i < gesture.movement.Count; i++)
+            {
+                for (int j = 1; j < template.movement.Count; j++)
+                {
+                    double cost = Math.Abs(gesture.movement.ElementAt(i) - template.movement.ElementAt(j));
+                    dwt_matrix[i, j] = cost + Math.Min(Math.Min(dwt_matrix[i - 1, j], dwt_matrix[i, j - 1]), dwt_matrix[i - 1, j - 1]);
+                }
+            }
+            return dwt_matrix[gesture.movement.Count - 1, template.movement.Count - 1];
+        }
+    }
+
+
+    public partial class MouseGesture
+    {
+        Point start_point;
+        Point last_point;
+        public List<Double> movement = new List<Double>();
+
+        public MouseGesture()
+        {
+        }
+
+        public void init(double x, double y)
+        {
+            start_point.X = x;
+            start_point.Y = y;
+            last_point.X = x;
+            last_point.Y = y;
+            movement = new List<Double>();
+        }
+
+        public void AddValue(double x, double y)
+        {
+            Vector vector_start = new Vector(Math.Abs(start_point.X - x), Math.Abs(start_point.Y - y));
+            Vector vector_last = new Vector(Math.Abs(last_point.X - x), Math.Abs(last_point.Y - y));
+
+            Double angle_between = Vector.AngleBetween(vector_start, vector_last);
+
+            movement.Add(angle_between * Math.PI / 180);
+
+            last_point.X = x;
+            last_point.Y = y;
         }
     }
 }
