@@ -21,6 +21,7 @@ using System.Xml.Serialization;
 using System.IO;
 using System.Diagnostics;
 using System.Xml;
+using System.Timers;
 
 namespace MBO_HanoiTowers
 {
@@ -63,6 +64,8 @@ namespace MBO_HanoiTowers
         MouseGesture one_gesture;
         MouseGesture two_gesture;
         MouseGesture three_gesture;
+        Frame putthatthere;
+        Frame close;
 
        
         //main method
@@ -225,6 +228,9 @@ namespace MBO_HanoiTowers
                 FileStream filestream_3 = new FileStream("templates/Template_3.xml", FileMode.Open);
                 this.three_gesture = (MouseGesture)mySerializer.Deserialize(filestream_3);
             }
+
+            putthatthere = new Frame("putthatthere");
+            close = new Frame("close");
         }
 
 
@@ -280,7 +286,10 @@ namespace MBO_HanoiTowers
                     break;
             }
 
-            setPoles(clicked);
+
+            putthatthere.fillSlot((int)clicked);
+
+            //setPoles(clicked);
         }
 
         //check if move is valid
@@ -326,6 +335,7 @@ namespace MBO_HanoiTowers
                     default:
                         break;
                 }
+
                 Console.WriteLine("canvasList: " + canvasList[senderValue].Count());
                 //if (getLastElementWidth(senderPole.Value) < 0)
                 if (canvasList[senderValue].Count() <= 0)
@@ -726,4 +736,60 @@ namespace MBO_HanoiTowers
             last_point.Y = y;
         }
     }
+
+    public partial class Frame {
+
+        String command;
+        int[,] slots;
+        private Object thisLock = new Object();
+        private System.Timers.Timer timer;
+
+
+        public void initTimer() {
+            timer = new System.Timers.Timer(5000);
+            timer.Enabled = true;
+            timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+        }
+
+        public Frame(String command) {
+            this.command = command;
+            this.slots = initSlots(command);
+            initTimer();
+        }
+
+        public int[,] initSlots(String command){
+            int[,] _slots;
+            switch (command) {
+                case "putthatthere":
+                    _slots = new int[4,3];
+                    break;
+                case "close":
+                    _slots = new int[2,2];
+                    break;
+                default:
+                    _slots = new int[0,0];
+                    break;
+            }
+            return _slots;
+        }
+
+        public void fillSlot(int value) { 
+            lock (thisLock) {
+
+                //check which slot gets filled
+                //this.slots[slotX, slotY] = value;
+            }     
+        }
+
+        public void clearSlots() {
+            Array.Clear(this.slots, 0, this.slots.Length);
+        }
+
+        public void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            clearSlots();
+        }
+    }
+
+
 }
