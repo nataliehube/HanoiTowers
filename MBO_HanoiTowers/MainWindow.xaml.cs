@@ -266,6 +266,7 @@ namespace MBO_HanoiTowers
         // position 1,2 or 3
         private void userCommand(object sender, MouseButtonEventArgs e)
         {
+            String modality = "mouse";
             int? clicked = null;
             // specify origin
             switch (((FrameworkElement)e.Source).Name)
@@ -287,7 +288,7 @@ namespace MBO_HanoiTowers
             }
 
 
-            putthatthere.fillSlot((int)clicked);
+            putthatthere.fillSlot((int)clicked, modality);
 
             //setPoles(clicked);
         }
@@ -743,6 +744,8 @@ namespace MBO_HanoiTowers
         int[,] slots;
         private Object thisLock = new Object();
         private System.Timers.Timer timer;
+        int? sender;
+        int? target;
 
 
         public void initTimer() {
@@ -754,6 +757,8 @@ namespace MBO_HanoiTowers
         public Frame(String command) {
             this.command = command;
             this.slots = initSlots(command);
+            this.sender = null;
+            this.target = null;
             initTimer();
         }
 
@@ -773,9 +778,57 @@ namespace MBO_HanoiTowers
             return _slots;
         }
 
-        public void fillSlot(int value) { 
+        //TODO LOGIK ÜBERPRÜFEN
+        public void fillSlot(int value, String modality) { 
             lock (thisLock) {
+                switch (modality) { 
+                    case "mouse":
+                        if (!this.sender.HasValue)
+                        {
 
+                        }
+                        if (this.slots[3, 1] != 0)
+                        {
+                            this.slots[3, 2] = value;
+                        }
+                        else {
+                            this.slots[3, 1] = value;
+                        }
+                        break;
+                    case "speech":
+                        if (this.slots[0, 1] != 0) {
+                            this.slots[0, 2] = value;
+                        }
+                        else
+                        {
+                            this.slots[0, 1] = value;
+                        }
+                        break;
+                    case "gesture":
+                        if (this.slots[1, 1] != 0)
+                        {
+                            this.slots[1, 2] = value;
+                        }
+                        else
+                        {
+                            this.slots[1, 1] = value;
+                        }
+                        break;
+                    case "smouse":
+                        if (this.slots[2, 0] != 0)
+                        {
+
+                            this.slots[2, 2] = value;
+                        }
+                        
+                        else
+                        {
+                            this.slots[2, 1] = value;
+                        }
+                        break;
+                    default:
+                        break;
+                }
                 //check which slot gets filled
                 //this.slots[slotX, slotY] = value;
             }     
