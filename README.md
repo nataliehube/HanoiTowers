@@ -19,3 +19,4 @@ http://de.wikipedia.org/wiki/T%C3%BCrme_von_Hanoi
 #### Anzahl: <Zahl> Scheiben.
 #### Lösen.
 #### Zurücksetzen.
+#### Bewege "das" nach "da".

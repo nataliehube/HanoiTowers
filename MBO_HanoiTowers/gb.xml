@@ -31,6 +31,9 @@
       <item>Neun</item>
       <item>Zehn</item>
 	  
+      <item>Bewege</item>
+      <item>Das</item>
+      <item>Nach Da</item>
     </one-of>
   </rule>
 </grammar>
