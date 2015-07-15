@@ -282,18 +282,6 @@ namespace MBO_HanoiTowers
         //set values of poles
         private void setPoles(int? pole)
         {
-            int? value = null;
-            //try
-            //{
-            //    value = getLastElementWidth(senderPole.Value);
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    message.Content = "Fehler! :" + ex;
-            //    senderPole = null;
-            //}
-
             if (!senderPole.HasValue)
             {
                 senderPole = pole;
@@ -333,40 +321,40 @@ namespace MBO_HanoiTowers
         }
 
 
-        //function to handle Input
-        private void handleInput(int? pole)
-        {
-            // define sender/from
-            if (!senderPole.HasValue)
-            {
-                senderPole = pole;
+        ////function to handle Input
+        //private void handleInput(int? pole)
+        //{
+        //    // define sender/from
+        //    if (!senderPole.HasValue)
+        //    {
+        //        senderPole = pole;
                 
-            }
-            // define target/to
-            else
-            {
-                targetPole = pole;
-                // check if turn is allowed (sender.width < target.width)!
-                if ((getLastElementWidth(senderPole.Value) < getLastElementWidth(targetPole.Value) || getLastElementWidth(targetPole.Value) == 0) && getLastElementWidth(senderPole.Value) != 0)
-                {
-                    // start animation
-                    moveTo(senderPole.Value, targetPole.Value);
-                    System.Media.SystemSounds.Hand.Play();
-                    message.Content = "";
-                }
-                else
-                {
-                    // wrong turn
-                    System.Media.SystemSounds.Beep.Play();
-                    message.Content = "Wrong turn.";
-                }
-                // reset parameters
-                senderPole = null;
-                targetPole = null;
-            }
+        //    }
+        //    // define target/to
+        //    else
+        //    {
+        //        targetPole = pole;
+        //        // check if turn is allowed (sender.width < target.width)!
+        //        if ((getLastElementWidth(senderPole.Value) < getLastElementWidth(targetPole.Value) || getLastElementWidth(targetPole.Value) == 0) && getLastElementWidth(senderPole.Value) != 0)
+        //        {
+        //            // start animation
+        //            moveTo(senderPole.Value, targetPole.Value);
+        //            System.Media.SystemSounds.Hand.Play();
+        //            message.Content = "";
+        //        }
+        //        else
+        //        {
+        //            // wrong turn
+        //            System.Media.SystemSounds.Beep.Play();
+        //            message.Content = "Wrong turn.";
+        //        }
+        //        // reset parameters
+        //        senderPole = null;
+        //        targetPole = null;
+        //    }
 
 
-        }
+        //}
 
 
         // get last element in canvas list to return the width of the specific rectangle
