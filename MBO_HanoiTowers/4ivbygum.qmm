@@ -44,7 +44,7 @@ namespace MBO_HanoiTowers
         // Animation Speed
         int moveSpeed = 1;
         // Canvas List
-        List<Canvas>[] canvasElements = new List<Canvas>[3];
+        List<Canvas>[] canvasList = new List<Canvas>[3];
         // click sender and click target
 
         int? said_first = null;
@@ -277,23 +277,103 @@ namespace MBO_HanoiTowers
                 // wrong turn
                 System.Media.SystemSounds.Beep.Play();
                 message.Content = "Wrong turn.";
+                //Console.WriteLine("canvasList" + canvasList);
             }
             // reset parameters
+            //senderPole = null;
+            //targetPole = null;
+
             frame.sender = null;
             frame.target = null;
 
         }
 
-     
+        //set values of poles
+        private void setPoles(int? pole)
+        {
+            if (!senderPole.HasValue)
+            {
+                senderPole = pole;
+                switch (senderPole)
+                {
+                    case 0:
+                        senderValue = 0;
+                        break;
+                    case 1:
+                        senderValue = 1;
+                        break;
+                    case 2:
+                        senderValue = 2;
+                        break;
+                    default:
+                        break;
+                }
+
+                Console.WriteLine("canvasList: " + canvasList[senderValue].Count());
+                //if (getDiskWidth(senderPole.Value) < 0)
+                if (canvasList[senderValue].Count() <= 0)
+                {
+                    message.Content = "Hier ist doch gar nichts!";
+                    senderPole = null;
+                    Console.WriteLine("Value: " + senderValue);
+                    senderValue = 3;
+                }
+                Console.WriteLine("Neuer Wert: " + senderPole);
+            }
+            else
+            {
+                targetPole = pole;
+            }
+            if (senderPole.HasValue && targetPole.HasValue)
+            {
+                //isValid();
+            }
+        }
+
+
+        ////function to handle Input
+        //private void handleInput(int? pole)
+        //{
+        //    // define sender/from
+        //    if (!senderPole.HasValue)
+        //    {
+        //        senderPole = pole;
+                
+        //    }
+        //    // define target/to
+        //    else
+        //    {
+        //        targetPole = pole;
+        //        // check if turn is allowed (sender.width < target.width)!
+        //        if ((getDiskWidth(senderPole.Value) < getDiskWidth(targetPole.Value) || getDiskWidth(targetPole.Value) == 0) && getDiskWidth(senderPole.Value) != 0)
+        //        {
+        //            // start animation
+        //            moveTo(senderPole.Value, targetPole.Value);
+        //            System.Media.SystemSounds.Hand.Play();
+        //            message.Content = "";
+        //        }
+        //        else
+        //        {
+        //            // wrong turn
+        //            System.Media.SystemSounds.Beep.Play();
+        //            message.Content = "Wrong turn.";
+        //        }
+        //        // reset parameters
+        //        senderPole = null;
+        //        targetPole = null;
+        //    }
+
+
+        //}
 
         // get last element in canvas list to return the width of the specific rectangle
         // -> to check if turn is allowed
         private int getDiskWidth(int i)
         {
             int w = 0;
-            if (canvasElements[i].Count() > 0)
+            if (canvasList[i].Count() > 0)
             {
-                Canvas cn = canvasElements[i][canvasElements[i].Count() - 1];
+                Canvas cn = canvasList[i][canvasList[i].Count() - 1];
                 foreach (UIElement element in cn.Children)
                 {
                     if (element is Rectangle)
@@ -310,13 +390,14 @@ namespace MBO_HanoiTowers
         private void reset_Click(object sender, RoutedEventArgs e)
         {
             System.Media.SystemSounds.Beep.Play();
-            said_first = null;
-            said_second = null;
-            said = null;
-            saidMove = false;
-            nextMove = false;
-            said_close_part1 = null;
-            said_close_part2 = null;
+            int? said_first = null;
+            int? said_second = null;
+            int? said = null;
+            bool saidMove = false;
+            bool nextMove = false;
+            int senderValue;
+            int? said_close_part1 = null;
+            int? said_close_part2 = null;
             init();
         }
 
@@ -344,9 +425,9 @@ namespace MBO_HanoiTowers
             // clear canvas
             Canvas1.Children.Clear();
             message.Content = "";
-            canvasElements[0] = new List<Canvas>();
-            canvasElements[1] = new List<Canvas>();
-            canvasElements[2] = new List<Canvas>();
+            canvasList[0] = new List<Canvas>();
+            canvasList[1] = new List<Canvas>();
+            canvasList[2] = new List<Canvas>();
 
             double d = Canvas1.Width / 3;
             gridWidth = d;
@@ -371,7 +452,7 @@ namespace MBO_HanoiTowers
                 Canvas.SetLeft(cn, (d - cn.Width) / 2);
                 Canvas.SetTop(cn, 1000 - (i+1) * height);
                 Canvas1.Children.Add(cn);
-                canvasElements[0].Add(cn);
+                canvasList[0].Add(cn);
             }
         }
 
@@ -381,13 +462,13 @@ namespace MBO_HanoiTowers
             if (to <= 2 && to >= 0)
             {
                 System.Console.WriteLine("Bewege Scheibe von Turm " + from + " zu Turm " + to + ".");
-                if (canvasElements[from][0] != null)
+                if (canvasList[from][0] != null)
                 {
                     // handle selected canvas
-                    Canvas cn = canvasElements[from][canvasElements[from].Count()-1];
-                    canvasElements[from].Remove(cn);
-                    canvasElements[to].Add(cn);
-                    int count = canvasElements[to].Count;
+                    Canvas cn = canvasList[from][canvasList[from].Count()-1];
+                    canvasList[from].Remove(cn);
+                    canvasList[to].Add(cn);
+                    int count = canvasList[to].Count;
                     // animation process
                     Storyboard sb = new Storyboard();
                     DoubleAnimation da = new DoubleAnimation(Canvas.GetLeft(cn), (Canvas1.Width / 3 - cn.Width) / 2 + to * 400, new Duration(new TimeSpan(0, 0, moveSpeed)));
@@ -436,7 +517,7 @@ namespace MBO_HanoiTowers
         // check if game is finished
         private Boolean isDone()
         {
-            if (canvasElements[2].Count() == maxCount || canvasElements[1].Count() == maxCount)
+            if (canvasList[2].Count() == maxCount || canvasList[1].Count() == maxCount)
             {
                 return true;
             }

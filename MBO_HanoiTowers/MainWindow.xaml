@@ -24,29 +24,26 @@
     <Viewbox Stretch="Fill">
         <Canvas Background="White" Width="1200" Height="1200" x:Name="Canvas2">
 
-            <Line Stroke="Khaki" StrokeThickness="30" X1="200" Y1="120" X2="200" Y2="1000" />
-            <Line Stroke="Khaki" StrokeThickness="30" X1="600" Y1="120" X2="600" Y2="1000" />
-            <Line Stroke="Khaki" StrokeThickness="30" X1="1000" Y1="120" X2="1000" Y2="1000" />
+            <Line Stroke="Khaki" StrokeThickness="30" X1="200" Y1="199" X2="200" Y2="1199" />
+            <Line Stroke="Khaki" StrokeThickness="30" X1="600" Y1="199" X2="600" Y2="1199" />
+            <Line Stroke="Khaki" StrokeThickness="30" X1="1000" Y1="199" X2="1000" Y2="1199" />
             <Canvas Background="Transparent" Width="1200" Height="1200" x:Name="Canvas1">
 
             </Canvas>
 
-            <Rectangle Width="400" Height="1000" Canvas.ZIndex="99" Fill="Transparent" Stroke="Red" StrokeThickness="0" x:Name="one" Canvas.Top="0" Canvas.Left="0" MouseLeftButtonDown="userCommand" />
-            <Rectangle Width="400" Height="1000" Canvas.ZIndex="99" Fill="Transparent" Stroke="Red" StrokeThickness="0" x:Name="two" Canvas.Top="0" Canvas.Left="400" MouseLeftButtonDown="userCommand" />
-            <Rectangle Width="400" Height="1000" Canvas.ZIndex="99" Fill="Transparent" Stroke="Red" StrokeThickness="0" x:Name="three" Canvas.Top="0" Canvas.Left="800" MouseLeftButtonDown="userCommand"/>
-            <Rectangle Width="1200" Height="200" Fill="Bisque" Canvas.Top="1000" Canvas.Left="0" StrokeThickness="3" />
+            <Rectangle Width="400" Height="1000" Canvas.ZIndex="99" Fill="Transparent" Stroke="Red" StrokeThickness="0" x:Name="one" Canvas.Top="199" Canvas.Left="0" MouseLeftButtonDown="userCommand" />
+            <Rectangle Width="400" Height="1000" Canvas.ZIndex="99" Fill="Transparent" Stroke="Red" StrokeThickness="0" x:Name="two" Canvas.Top="199" Canvas.Left="400" MouseLeftButtonDown="userCommand" />
+            <Rectangle Width="400" Height="1000" Canvas.ZIndex="99" Fill="Transparent" Stroke="Red" StrokeThickness="0" x:Name="three" Canvas.Top="199" Canvas.Left="800" MouseLeftButtonDown="userCommand"/>
+            <Rectangle Width="1200" Height="200" Fill="Bisque" Canvas.Left="2" StrokeThickness="3" />
 
-            <Button Content="Lösen" Height="47"  FontSize="25"  FontWeight="Bold" Name="solve" Width="182" Click="solve_Click" Canvas.Top="1116" Canvas.Left="400" Cursor="Hand" FontFamily="Open Sans Light"/>
-            <Button Content="Zurücksetzen" Height="50"  FontSize="25"  FontWeight="Bold" Name="reset" Width="182" Click="reset_Click" Canvas.Top="1061" Canvas.Left="400" Cursor="Hand" FontFamily="Open Sans Light"/>
+            <Button Content="Lösen" Height="47"  FontSize="25"  FontWeight="Bold" Name="solve" Width="182" Click="solve_Click" Canvas.Top="40" Canvas.Left="833" Cursor="Hand" FontFamily="Open Sans Light"/>
+            <Button Content="Zurücksetzen" Height="50"  FontSize="25"  FontWeight="Bold" Name="reset" Width="182" Click="reset_Click" Canvas.Top="50" Canvas.Left="555" Cursor="Hand" FontFamily="Open Sans Light"/>
 
-            <Label Content="MBO - Towers of Hanoi" VerticalAlignment="Center" FontSize="30" Canvas.Top="1086" Canvas.Left="25" FontFamily="Open Sans Light"/>
+            <Label Content="MBO - Türme von Hanoi" VerticalAlignment="Center" FontSize="30" Canvas.Top="48" Canvas.Left="42" FontFamily="Open Sans Light"/>
             <Label Content="" Foreground="#ff0000" VerticalAlignment="Center" x:Name="message" FontSize="20" Canvas.Top="1160" Canvas.Left="70"/>
-            <Label Content="1" VerticalAlignment="Center" FontSize="30" Canvas.Top="1005" Canvas.Left="185" FontFamily="Open Sans Extrabold"/>
-            <Label Content="2" VerticalAlignment="Center" FontSize="30" Canvas.Top="1005" Canvas.Left="585" FontFamily="Open Sans Extrabold"/>
-            <Label Content="3" VerticalAlignment="Center" FontSize="30" Canvas.Top="1005" Canvas.Left="985" FontFamily="Open Sans Extrabold"/>
-            <Label Content="Anzahl:" FontWeight="Bold" FontSize="25" Canvas.Top="1095" Canvas.Left="682" />
-            <Label Content="Scheiben" FontSize="25" Canvas.Top="1095" Canvas.Left="836" />
-            <TextBox Width="50" FontSize="20" Text="" Name="Plate" VerticalAlignment="Center" Canvas.Top="1090" Canvas.Left="784" Padding="10" KeyUp="changePlateCount" PreviewKeyUp="changePlateCount"/>
+            <Label Content="1" VerticalAlignment="Center" FontSize="30" Canvas.Top="150" Canvas.Left="187" FontFamily="Open Sans Extrabold"/>
+            <Label Content="2" VerticalAlignment="Center" FontSize="30" Canvas.Top="150" Canvas.Left="585" FontFamily="Open Sans Extrabold"/>
+            <Label Content="3" VerticalAlignment="Center" FontSize="30" Canvas.Top="150" Canvas.Left="985" FontFamily="Open Sans Extrabold"/>
         </Canvas>
     </Viewbox>
 
