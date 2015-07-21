@@ -51,8 +51,6 @@ namespace MBO_HanoiTowers
         int? said_second = null;
         int? said = null;
         bool saidMove = false;
-        bool nextMove = false;
-        int senderValue;
         int? said_close_part1 = null;
         int? said_close_part2 = null;
 
@@ -79,7 +77,7 @@ namespace MBO_HanoiTowers
 
             // Create the Grammar instance and load it into the speech recognition engine.
             speechRecognizer.UnloadAllGrammars();
-            Grammar g = new Grammar(@"C:\Users\andyy_000\Documents\Visual Studio 2013\Projects\HanoiTowers\MBO_HanoiTowers\gb.xml", "hanoiTowers");
+            Grammar g = new Grammar(@"C:\Users\Natalie\Dropbox\TU Dresden\VMI-10 Multimodale Benutzungsoberflächen\Uebungen\HanoiTowers\MBO_HanoiTowers\gb.xml", "hanoiTowers");
             speechRecognizer.LoadGrammar(g);
 
             speechRecognizer.SetInputToDefaultAudioDevice();
@@ -119,19 +117,16 @@ namespace MBO_HanoiTowers
                             said_first = 0;
                             Console.WriteLine("Bla 1");
                             saidMove = false;
-                            nextMove = true;
                         }
                         else if (this.two.IsMouseOver && saidMove == true) {
                             said_first = 1;
                             Console.WriteLine("Bla 2");
                             saidMove = false;
-                            nextMove = true;
                         }
                         else if (this.three.IsMouseOver && saidMove == true) {
                             said_first = 2;
                             Console.WriteLine("Bla 3");
                             saidMove = false;
-                            nextMove = true;
                         }
                         break;
                     case "Nach Da":
@@ -269,14 +264,12 @@ namespace MBO_HanoiTowers
             {
                 // start animation
                 moveTo(sender.Value, target.Value);
-                System.Media.SystemSounds.Hand.Play();
                 message.Content = "";
             }
             else
             {
                 // wrong turn
-                System.Media.SystemSounds.Beep.Play();
-                message.Content = "Wrong turn.";
+                message.Content = "Das geht nicht!";
             }
             // reset parameters
             frame.sender = null;
@@ -309,12 +302,10 @@ namespace MBO_HanoiTowers
         // click handler for reset button
         private void reset_Click(object sender, RoutedEventArgs e)
         {
-            System.Media.SystemSounds.Beep.Play();
             said_first = null;
             said_second = null;
             said = null;
             saidMove = false;
-            nextMove = false;
             said_close_part1 = null;
             said_close_part2 = null;
             init();
@@ -328,7 +319,6 @@ namespace MBO_HanoiTowers
             solve.IsEnabled = false;
             reset.IsEnabled = false;
             message.Content = "Rätsel wird gelöst. Bitte warten...";
-            System.Media.SystemSounds.Hand.Play();
             // start thread queue
             ThreadPool.QueueUserWorkItem(new WaitCallback(startSolver));
         }
@@ -369,7 +359,7 @@ namespace MBO_HanoiTowers
                 cn.Children.Add(rc);
                 // position of canvas
                 Canvas.SetLeft(cn, (d - cn.Width) / 2);
-                Canvas.SetTop(cn, 1000 - (i+1) * height);
+                Canvas.SetTop(cn, 1199 - (i+1) * height);
                 Canvas1.Children.Add(cn);
                 canvasElements[0].Add(cn);
             }
@@ -391,8 +381,8 @@ namespace MBO_HanoiTowers
                     // animation process
                     Storyboard sb = new Storyboard();
                     DoubleAnimation da = new DoubleAnimation(Canvas.GetLeft(cn), (Canvas1.Width / 3 - cn.Width) / 2 + to * 400, new Duration(new TimeSpan(0, 0, moveSpeed)));
-                    DoubleAnimation da1 = new DoubleAnimation(Canvas.GetTop(cn), 1000 - (count) * height, new Duration(new TimeSpan(0, 0, moveSpeed)));
-                    System.Console.WriteLine("Height: " + (1000 - (count) * height));
+                    DoubleAnimation da1 = new DoubleAnimation(Canvas.GetTop(cn), 1199 - (count) * height, new Duration(new TimeSpan(0, 0, moveSpeed)));
+                    System.Console.WriteLine("Height: " + (1199 - (count) * height));
                     Storyboard.SetTargetProperty(da, new PropertyPath("(Canvas.Left)"));
                     Storyboard.SetTargetProperty(da1, new PropertyPath("(Canvas.Top)"));
                     sb.Children.Add(da);
@@ -444,6 +434,11 @@ namespace MBO_HanoiTowers
             {
                 return false;
             }
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+
         }
   
         // GESTURE DETECTION
