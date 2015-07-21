@@ -54,6 +54,8 @@ namespace MBO_HanoiTowers
         bool saidMove = false;
         bool nextMove = false;
         int senderValue;
+        int? said_close_part1 = null;
+        int? said_close_part2 = null;
 
         private SpeechRecognitionEngine speechRecognizer = new SpeechRecognitionEngine(new CultureInfo("de-DE"));
 
@@ -64,6 +66,8 @@ namespace MBO_HanoiTowers
         MouseGesture one_gesture;
         MouseGesture two_gesture;
         MouseGesture three_gesture;
+        MouseGesture close_part1;
+        MouseGesture close_part2;
         Frame putthatthere;
         Frame close;
 
@@ -87,9 +91,7 @@ namespace MBO_HanoiTowers
 
             speechRecognizer.SpeechRecognized += (s, e1) =>
             {
-                said_first = null;
-                said_second = null;
-                said = null;
+
                 string from = e1.Result.Text;
                 printSpeechRecognized(from);
                 switch (from)
@@ -162,9 +164,7 @@ namespace MBO_HanoiTowers
                             changePlateCount(null, null);
                         }
                         break;
-                    case "Bewege":
-                        senderPole = null;
-                        targetPole = null;
+                    case "Bewege":  
                         saidMove = true;
                         break;
                     case "Das":
@@ -201,17 +201,63 @@ namespace MBO_HanoiTowers
                             Console.WriteLine("Möp 3");
                         }
                         break;
+                    case "Schließe":
+                        said_close_part1 = 1;
+                        close.fillSlot((int)said_close_part1);
+                        checkFrame(close);
+                        break;
+                    case "Programm":
+                        said_close_part2 = 1;
+                        close.fillSlot((int)said_close_part2);
+                        checkFrame(close);
+                        break;
                     default:
                         Console.WriteLine("Default case");
                         break;
                 }
-                //if (said_first == null || said_second == null)
-                //{
-                    setPoles(said);
-                    Console.WriteLine("oder hier?");
-                    Console.WriteLine("boolaean: " + saidMove);
-                    saidOrder();
-                //}
+                if (said_first != null) {
+                    putthatthere.fillSlot((int)said_first);
+                    checkFrame(putthatthere);
+                    Console.WriteLine("said_first");
+                    saidMove = false;
+
+                } 
+                if (said_second != null) {
+                    putthatthere.fillSlot((int)said_second);
+                    checkFrame(putthatthere);
+                    Console.WriteLine("said_second");
+                    saidMove = false;
+
+                }
+                if (said != null) {
+                    putthatthere.fillSlot((int)said);
+                    checkFrame(putthatthere);
+                }
+
+                if (putthatthere.sender.HasValue) {
+                    Console.WriteLine("Sender: ");
+                    Console.WriteLine(putthatthere.sender.Value);
+                }
+
+                if (putthatthere.target.HasValue) {
+                    Console.WriteLine("Target: ");
+                    Console.WriteLine(putthatthere.target.Value);
+                }
+                
+
+
+                said = null;
+                said_first = null;
+                said_second = null;
+                said_close_part1 = null;
+                said_close_part2 = null;
+
+
+                    //setPoles(said);
+                    //Console.WriteLine("oder hier?");
+                    //Console.WriteLine("boolaean: " + saidMove);
+                    //saidOrder();
+               
                 //else if (said_first.HasValue || said_second.HasValue)
                 //{
                 //    Console.WriteLine("Komme ich hie rein?");
@@ -227,6 +273,11 @@ namespace MBO_HanoiTowers
                 this.two_gesture = (MouseGesture)mySerializer.Deserialize(filestream_2);
                 FileStream filestream_3 = new FileStream("templates/Template_3.xml", FileMode.Open);
                 this.three_gesture = (MouseGesture)mySerializer.Deserialize(filestream_3);
+                FileStream filestream_4 = new FileStream("templates/close_linksunten_rechtsoben.xml", FileMode.Open);
+                this.close_part1 = (MouseGesture)mySerializer.Deserialize(filestream_4);
+                FileStream filestream_5 = new FileStream("templates/close_linksoben_rechtsunten.xml", FileMode.Open);
+                this.close_part2 = (MouseGesture)mySerializer.Deserialize(filestream_5);
+
             }
 
             putthatthere = new Frame("putthatthere");
@@ -240,12 +291,17 @@ namespace MBO_HanoiTowers
         {
             if (!senderPole.HasValue)
             {
-                setPoles(said_first);
+                putthatthere.fillSlot((int)said_first);
+                checkFrame(putthatthere);
+
+                //setPoles(said_first);
                 Console.WriteLine("setze first");
             }
             else if (senderPole.HasValue)
             {
-                setPoles(said_second);
+                putthatthere.fillSlot((int)said_second);
+
+                //setPoles(said_second);
                 Console.WriteLine("setze second");
             } 
             else if (senderPole == null && targetPole ==null)
@@ -266,7 +322,7 @@ namespace MBO_HanoiTowers
         // position 1,2 or 3
         private void userCommand(object sender, MouseButtonEventArgs e)
         {
-            String modality = "mouse";
+            //String modality = "mouse";
             int? clicked = null;
             // specify origin
             switch (((FrameworkElement)e.Source).Name)
@@ -288,18 +344,30 @@ namespace MBO_HanoiTowers
             }
 
 
-            putthatthere.fillSlot((int)clicked, modality);
+            putthatthere.fillSlot((int)clicked);
+            checkFrame(putthatthere);
+
 
             //setPoles(clicked);
         }
 
+        /*
+        private void isValidClose(Frame frame) {
+            int? sender = frame.sender;
+            int? target = frame.target;
+
+        }
+        */
+
         //check if move is valid
-        private void isValid()
+        private void isValid(Frame frame)
         {
-            if ((getLastElementWidth(senderPole.Value) < getLastElementWidth(targetPole.Value) || getLastElementWidth(targetPole.Value) == 0) && getLastElementWidth(senderPole.Value) != 0)
+            int? sender = frame.sender;
+            int? target = frame.target;
+            if ((getLastElementWidth(sender.Value) < getLastElementWidth(target.Value) || getLastElementWidth(target.Value) == 0) && getLastElementWidth(sender.Value) != 0)
             {
                 // start animation
-                moveTo(senderPole.Value, targetPole.Value);
+                moveTo(sender.Value, target.Value);
                 System.Media.SystemSounds.Hand.Play();
                 message.Content = "";
             }
@@ -311,8 +379,11 @@ namespace MBO_HanoiTowers
                 //Console.WriteLine("canvasList" + canvasList);
             }
             // reset parameters
-            senderPole = null;
-            targetPole = null;
+            //senderPole = null;
+            //targetPole = null;
+
+            frame.sender = null;
+            frame.target = null;
 
         }
 
@@ -354,7 +425,7 @@ namespace MBO_HanoiTowers
             }
             if (senderPole.HasValue && targetPole.HasValue)
             {
-                isValid();
+                //isValid();
             }
         }
 
@@ -627,6 +698,7 @@ namespace MBO_HanoiTowers
         private void Finish_Gesture(object sender, MouseEventArgs e)
         {
             int? drawed = null;
+            int? closeValue = null;
             button_pressed = false;
             if (Templating)
             {
@@ -640,7 +712,7 @@ namespace MBO_HanoiTowers
             else
             {
                 /*
-                 * Record Gesture 
+                // Record Gesture 
                 XmlSerializer serializer = new XmlSerializer(typeof(MouseGesture));
                 XmlWriterSettings settings = new XmlWriterSettings();
                 settings.Indent = true;
@@ -650,6 +722,7 @@ namespace MBO_HanoiTowers
 
                 writerXML.Close();
                 */
+                
                 
                 double one = this.dynamicTimeWarping(this.current_gesture, this.one_gesture);
                 double two = this.dynamicTimeWarping(this.current_gesture, this.two_gesture);
@@ -673,7 +746,27 @@ namespace MBO_HanoiTowers
                     Debug.WriteLine("Three: {0}", three);
                 }
 
-                setPoles(drawed);
+                if (drawed != null)
+                {
+                    putthatthere.fillSlot((int)drawed);
+                    checkFrame(putthatthere);
+                }
+
+                double close_part1 = this.dynamicTimeWarping(this.current_gesture, this.close_part1);
+                double close_part2 = this.dynamicTimeWarping(this.current_gesture, this.close_part2);
+                if (close_part1 < close_part2)
+                {
+                    closeValue = 1;
+                    close.fillSlot((int)closeValue);
+                    checkFrame(close);
+                }
+                else {
+                    closeValue = 2;
+                    close.fillSlot((int)closeValue);
+                    checkFrame(close);
+
+                }
+                //setPoles(drawed);
 
             }
         }
@@ -701,6 +794,21 @@ namespace MBO_HanoiTowers
                 }
             }
             return dwt_matrix[gesture.movement.Count - 1, template.movement.Count - 1];
+        }
+
+        public void checkFrame(Frame frame) {
+            if (frame.sender.HasValue && frame.target.HasValue)
+            {
+                if (frame.command == "putthatthere")
+                {
+                    isValid(frame);
+                }
+                if (frame.command == "close")
+                {
+                    this.Close();
+                    //isValidClose(frame);
+                }
+            }
         }
     }
 
@@ -740,12 +848,12 @@ namespace MBO_HanoiTowers
 
     public partial class Frame {
 
-        String command;
+        public String command;
         int[,] slots;
         private Object thisLock = new Object();
         private System.Timers.Timer timer;
-        int? sender;
-        int? target;
+        public int? sender;
+        public int? target;
 
 
         public void initTimer() {
@@ -759,7 +867,7 @@ namespace MBO_HanoiTowers
             this.slots = initSlots(command);
             this.sender = null;
             this.target = null;
-            initTimer();
+
         }
 
         public int[,] initSlots(String command){
@@ -779,8 +887,17 @@ namespace MBO_HanoiTowers
         }
 
         //TODO LOGIK ÜBERPRÜFEN
-        public void fillSlot(int value, String modality) { 
+        public void fillSlot(int value) { 
             lock (thisLock) {
+                if (!this.sender.HasValue)
+                {
+                    this.sender = value;
+                    initTimer();
+                }
+                else if (!this.target.HasValue) {
+                    this.target = value;
+                }
+                /*
                 switch (modality) { 
                     case "mouse":
                         if (!this.sender.HasValue)
@@ -829,13 +946,17 @@ namespace MBO_HanoiTowers
                     default:
                         break;
                 }
+                 * */
                 //check which slot gets filled
                 //this.slots[slotX, slotY] = value;
-            }     
+            }    
         }
 
         public void clearSlots() {
             Array.Clear(this.slots, 0, this.slots.Length);
+            //this.target = null;
+            //this.sender = null;
+
         }
 
         public void OnTimedEvent(object source, ElapsedEventArgs e)

@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<MouseGesture xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <movement>
+    <double>0</double>
+    <double>-0.13082739607405697</double>
+    <double>0.09065988720074511</double>
+    <double>0.04218275460310527</double>
+    <double>-0.066568163775823808</double>
+    <double>-0.10295571150712467</double>
+    <double>-0.0034722082682408007</double>
+    <double>-0.11491437261984212</double>
+    <double>-0.041324087485687062</double>
+    <double>-0.0063005466909824082</double>
+    <double>-0.071197284089394186</double>
+    <double>0.0088773825160259178</double>
+    <double>0.0361789536094904</double>
+    <double>-0.0311152538868739</double>
+    <double>-0.057919935476577394</double>
+    <double>-0.014700223471471402</double>
+    <double>0.030558170277499516</double>
+    <double>0.023213076767233349</double>
+    <double>-0.040540966168671214</double>
+    <double>-0.055947448158988583</double>
+    <double>-0.076771891269778042</double>
+    <double>-0.10629043670348931</double>
+    <double>-0.22543117167847618</double>
+    <double>-0.099854060850954621</double>
+    <double>-0.22255116512772202</double>
+    <double>-0.67990885487235764</double>
+    <double>0.88576238730437207</double>
+    <double>-0.68295430989032391</double>
+  </movement>
+</MouseGesture>

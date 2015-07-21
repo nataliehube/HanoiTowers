@@ -34,6 +34,9 @@
       <item>Bewege</item>
       <item>Das</item>
       <item>Nach Da</item>
+
+      <item>Schließe</item>
+      <item>Programm</item>
     </one-of>
   </rule>
 </grammar>
