@@ -68,7 +68,7 @@ namespace MBO_HanoiTowers
         Frame putthatthere;
         Frame close;
 
-       
+
         //main method
         public MainWindow()
         {
@@ -109,36 +109,42 @@ namespace MBO_HanoiTowers
                     case "Zurücksetzen":
                         reset_Click(null, null);
                         break;
-                    case "Bewege":  
+                    case "Bewege":
                         saidMove = true;
                         break;
                     case "Das":
-                        if (this.one.IsMouseOver && saidMove == true) {
+                        if (this.one.IsMouseOver && saidMove == true)
+                        {
                             said_first = 0;
                             Console.WriteLine("Bla 1");
                             saidMove = false;
                         }
-                        else if (this.two.IsMouseOver && saidMove == true) {
+                        else if (this.two.IsMouseOver && saidMove == true)
+                        {
                             said_first = 1;
                             Console.WriteLine("Bla 2");
                             saidMove = false;
                         }
-                        else if (this.three.IsMouseOver && saidMove == true) {
+                        else if (this.three.IsMouseOver && saidMove == true)
+                        {
                             said_first = 2;
                             Console.WriteLine("Bla 3");
                             saidMove = false;
                         }
                         break;
                     case "Nach Da":
-                        if (this.one.IsMouseOver) {
+                        if (this.one.IsMouseOver)
+                        {
                             said_second = 0;
                             Console.WriteLine("Möp 1");
                         }
-                        else if (this.two.IsMouseOver) {
+                        else if (this.two.IsMouseOver)
+                        {
                             said_second = 1;
                             Console.WriteLine("Möp 2");
                         }
-                        else if (this.three.IsMouseOver) {
+                        else if (this.three.IsMouseOver)
+                        {
                             said_second = 2;
                             Console.WriteLine("Möp 3");
                         }
@@ -157,35 +163,40 @@ namespace MBO_HanoiTowers
                         Console.WriteLine("Default case");
                         break;
                 }
-                if (said_first != null) {
+                if (said_first != null)
+                {
                     putthatthere.fillSlot((int)said_first);
                     checkFrame(putthatthere);
                     Console.WriteLine("said_first");
                     saidMove = false;
 
-                } 
-                if (said_second != null) {
+                }
+                if (said_second != null)
+                {
                     putthatthere.fillSlot((int)said_second);
                     checkFrame(putthatthere);
                     Console.WriteLine("said_second");
                     saidMove = false;
 
                 }
-                if (said != null) {
+                if (said != null)
+                {
                     putthatthere.fillSlot((int)said);
                     checkFrame(putthatthere);
                 }
 
-                if (putthatthere.sender.HasValue) {
+                if (putthatthere.sender.HasValue)
+                {
                     Console.WriteLine("Sender: ");
                     Console.WriteLine(putthatthere.sender.Value);
                 }
 
-                if (putthatthere.target.HasValue) {
+                if (putthatthere.target.HasValue)
+                {
                     Console.WriteLine("Target: ");
                     Console.WriteLine(putthatthere.target.Value);
                 }
-                
+
                 said = null;
                 said_first = null;
                 said_second = null;
@@ -214,7 +225,7 @@ namespace MBO_HanoiTowers
         }
 
 
-           
+
 
 
         private void printSpeechRecognized(string speech)
@@ -223,7 +234,7 @@ namespace MBO_HanoiTowers
             message.Content = "Nummer erkannt " + speech;
         }
 
-        
+
         // click command on grid rectangle
         // position 1,2 or 3
         private void userCommand(object sender, MouseButtonEventArgs e)
@@ -277,7 +288,7 @@ namespace MBO_HanoiTowers
 
         }
 
-     
+
 
         // get last element in canvas list to return the width of the specific rectangle
         // -> to check if turn is allowed
@@ -292,7 +303,7 @@ namespace MBO_HanoiTowers
                     if (element is Rectangle)
                     {
                         Rectangle rec = element as Rectangle;
-                        w = (int) rec.ActualWidth;
+                        w = (int)rec.ActualWidth;
                     }
                 }
             }
@@ -330,7 +341,8 @@ namespace MBO_HanoiTowers
         }
 
         // initiate canvas and all discs
-        private void init() {
+        private void init()
+        {
             // clear canvas
             Canvas1.Children.Clear();
             message.Content = "";
@@ -350,7 +362,7 @@ namespace MBO_HanoiTowers
                 // new rectangle as "disc"
                 Rectangle rc = new System.Windows.Shapes.Rectangle();
                 rc.Fill = Brushes.Pink;
-                rc.Width = canvasWidth - (i) * (250/(maxCount-1));
+                rc.Width = canvasWidth - (i) * (250 / (maxCount - 1));
                 rc.Height = height;
                 rc.Stroke = Brushes.Indigo;
                 // position of rectangle in canvas
@@ -359,7 +371,7 @@ namespace MBO_HanoiTowers
                 cn.Children.Add(rc);
                 // position of canvas
                 Canvas.SetLeft(cn, (d - cn.Width) / 2);
-                Canvas.SetTop(cn, 1199 - (i+1) * height);
+                Canvas.SetTop(cn, 1199 - (i + 1) * height);
                 Canvas1.Children.Add(cn);
                 canvasElements[0].Add(cn);
             }
@@ -374,7 +386,7 @@ namespace MBO_HanoiTowers
                 if (canvasElements[from][0] != null)
                 {
                     // handle selected canvas
-                    Canvas cn = canvasElements[from][canvasElements[from].Count()-1];
+                    Canvas cn = canvasElements[from][canvasElements[from].Count() - 1];
                     canvasElements[from].Remove(cn);
                     canvasElements[to].Add(cn);
                     int count = canvasElements[to].Count;
@@ -398,11 +410,11 @@ namespace MBO_HanoiTowers
                     }
                 }
             }
-            
+
         }
 
         delegate void moveAnimation(int from, int to);
-        
+
         // recursiv method to solve the game
         // towers of hanoi algorithm
         public void move(int n, int from, int to, int via)
@@ -412,7 +424,7 @@ namespace MBO_HanoiTowers
                 System.Console.WriteLine("Bewege Scheibe von Turm " + from + " zu Turm " + to + ".");
                 // call gui thread for animation handling
                 this.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
-                new moveAnimation(this.moveTo),from, to);
+                new moveAnimation(this.moveTo), from, to);
                 System.Threading.Thread.Sleep(800);
             }
             else
@@ -440,7 +452,7 @@ namespace MBO_HanoiTowers
         {
 
         }
-  
+
         // GESTURE DETECTION
         private void Start_Gesture(object sender, MouseEventArgs e)
         {
@@ -488,8 +500,8 @@ namespace MBO_HanoiTowers
 
                 writerXML.Close();
                 */
-                
-                
+
+
                 double one = this.dynamicTimeWarping(this.current_gesture, this.one_gesture);
                 double two = this.dynamicTimeWarping(this.current_gesture, this.two_gesture);
                 double three = this.dynamicTimeWarping(this.current_gesture, this.three_gesture);
@@ -516,17 +528,22 @@ namespace MBO_HanoiTowers
                 {
                     putthatthere.fillSlot((int)drawed);
                     checkFrame(putthatthere);
+                    close_part1 = 0;
+                    close_part2 = 0;
                 }
 
                 double close_part1 = this.dynamicTimeWarping(this.current_gesture, this.close_part1);
                 double close_part2 = this.dynamicTimeWarping(this.current_gesture, this.close_part2);
                 if (close_part1 < close_part2)
                 {
+                    Debug.WriteLine("Close: {Part1}");
                     closeValue = 1;
                     close.fillSlot((int)closeValue);
                     checkFrame(close);
                 }
-                else {
+                else
+                {
+                    Debug.WriteLine("Close: {Part2}");
                     closeValue = 2;
                     close.fillSlot((int)closeValue);
                     checkFrame(close);
@@ -562,7 +579,8 @@ namespace MBO_HanoiTowers
             return dwt_matrix[gesture.movement.Count - 1, template.movement.Count - 1];
         }
 
-        public void checkFrame(Frame frame) {
+        public void checkFrame(Frame frame)
+        {
             if (frame.sender.HasValue && frame.target.HasValue)
             {
                 if (frame.command == "putthatthere")
@@ -571,7 +589,9 @@ namespace MBO_HanoiTowers
                 }
                 if (frame.command == "close")
                 {
+                    System.Console.WriteLine("Schließen!");
                     this.Close();
+
                     //isValidClose(frame);
                 }
             }
@@ -612,7 +632,8 @@ namespace MBO_HanoiTowers
         }
     }
 
-    public partial class Frame {
+    public partial class Frame
+    {
 
         public String command;
         int[,] slots;
@@ -622,13 +643,15 @@ namespace MBO_HanoiTowers
         public int? target;
 
 
-        public void initTimer() {
+        public void initTimer()
+        {
             timer = new System.Timers.Timer(5000);
             timer.Enabled = true;
             timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
         }
 
-        public Frame(String command) {
+        public Frame(String command)
+        {
             this.command = command;
             this.slots = initSlots(command);
             this.sender = null;
@@ -636,31 +659,36 @@ namespace MBO_HanoiTowers
 
         }
 
-        public int[,] initSlots(String command){
+        public int[,] initSlots(String command)
+        {
             int[,] _slots;
-            switch (command) {
+            switch (command)
+            {
                 case "putthatthere":
-                    _slots = new int[4,3];
+                    _slots = new int[4, 3];
                     break;
                 case "close":
-                    _slots = new int[2,2];
+                    _slots = new int[2, 2];
                     break;
                 default:
-                    _slots = new int[0,0];
+                    _slots = new int[0, 0];
                     break;
             }
             return _slots;
         }
 
         //TODO LOGIK ÜBERPRÜFEN
-        public void fillSlot(int value) { 
-            lock (thisLock) {
+        public void fillSlot(int value)
+        {
+            lock (thisLock)
+            {
                 if (!this.sender.HasValue)
                 {
                     this.sender = value;
                     initTimer();
                 }
-                else if (!this.target.HasValue) {
+                else if (!this.target.HasValue)
+                {
                     this.target = value;
                 }
                 /*
@@ -715,10 +743,11 @@ namespace MBO_HanoiTowers
                  * */
                 //check which slot gets filled
                 //this.slots[slotX, slotY] = value;
-            }    
+            }
         }
 
-        public void clearSlots() {
+        public void clearSlots()
+        {
             Array.Clear(this.slots, 0, this.slots.Length);
             //this.target = null;
             //this.sender = null;
